@@ -24,9 +24,46 @@
 #   IN THE SOFTWARE.
 #
 
-cmake_minimum_required (VERSION 2.8.7)
+# Modified by Luc Michalski - 2016
+
+cmake_minimum_required(VERSION 3.5)
+
+include("cmake/HunterGate.cmake")
+HunterGate(
+    URL "https://github.com/ruslo/hunter/archive/v0.14.25.tar.gz"
+    SHA1 "a7ba9775c1206ced7cac204db802b116736ca481"
+)
 
 project (nanomsg C)
+
+#### settings 
+
+option(MILL_STATIC_LIB "Build static librairies" ON)
+option(MILL_SHARED_LIB "Build shared librairies" ON)
+option(MILL_PERFS "Build performances tests" OFF)
+option(MILL_TESTS "Build unit tests" OFF)
+
+#### install 
+
+set(config_install_dir "lib/cmake/${PROJECT_NAME}")
+set(include_install_dir "include")
+
+set(generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
+
+# Configuration
+set(version_config "${generated_dir}/${PROJECT_NAME}ConfigVersion.cmake")
+set(project_config "${generated_dir}/${PROJECT_NAME}Config.cmake")
+set(targets_export_name "${PROJECT_NAME}Targets")
+set(namespace "${PROJECT_NAME}::")
+
+include(CMakePackageConfigHelpers)
+
+configure_package_config_file(
+  "cmake/Config.cmake.in"
+  "${project_config}"
+  INSTALL_DESTINATION "${config_install_dir}"
+  )
+
 include (CheckFunctionExists)
 include (CheckSymbolExists)
 include (CheckStructHasMember)
